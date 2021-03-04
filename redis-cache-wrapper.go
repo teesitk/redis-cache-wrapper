@@ -28,7 +28,11 @@ func Remember(key string, value interface{}, expiredAt time.Duration, executor f
 		return result
 	} else {
 		result := executor()
-		client.Set(ctx, key, result, expiredAt)
-		return result
+		set := client.Set(ctx, key, result, expiredAt).Err()
+		if set == nil {
+			return result
+		} else {
+			return nil
+		}
 	}
 }
